@@ -24,10 +24,10 @@ def split_map_shuffle(file_name: str, queue_id: int, reducers_cnt: int):
     shuffler(queue_id, reducers_cnt)
 
 
-def write_data_to_files(mappers_cnt, file_name=FILE_NAME):
+def write_data_to_files(mappers_cnt, dir, file_name=FILE_NAME):
     with open(file_name, 'r') as source:
         all_lines = source.readlines()
-    file_names = [f'data/{i}.txt' for i in range(mappers_cnt)]
+    file_names = [f'{dir}/{i}.txt' for i in range(mappers_cnt)]
     num_of_lines = len(all_lines) // mappers_cnt
 
     for i in range(len(file_names)):
@@ -107,12 +107,7 @@ def control_wrapper():
 def main():
     args = parse_arguments()
     print(args)
-    file_names = write_data_to_files(args.mappers)
-    # # possible alternative to threading: multiprocessing
-    # with multiprocessing.Pool(args.mappers) as mapper:
-    # ...
-    # with multiprocessing.Pool(args.reducers) as reducer:
-    # ...
+    file_names = write_data_to_files(args.mappers, args.dir)
 
     threads_n = [] # split -> map -> shuffle
     for i in range(args.mappers):
